@@ -2,21 +2,60 @@ __Translocator Alpha__ by ==BlipJoy== #TITLE
 
 -> intro
 
-LIST parts = gauge //, valve, tools, conduit, lattice, coil, condenser, luminiferous optocoupler
-VAR inventory = ()
+// TODO: Most of these were never finished. I ran out of time!
+//LIST parts = (toolbox), (luminiferous_optocoupler)
+//LIST parts_for_thorne = (conduit), (aetherium_capsule)
+//LIST parts_for_sterling = (lattice), (quark_splitter)
+//LIST parts_for_standish = (magneto_resonator), (mainspring)
+//LIST parts_for_bradford = (condenser), (reagents)
 
-LIST peers = thorne, sterling, standish, bradford
-VAR helping = ()
+LIST parts = (toolbox)
+LIST parts_for_bradford = (reagents)
+
+VAR parts_needed = ()
+VAR inventory = ()
 
 CONST EXPLORE_WORKSHOP = 6
 VAR workshop_explored = 0
 
-VAR needs_supplies = false
-
 VAR requested_grant = 0
 VAR solved_safety_problem = false
 
+=== function print_parts_needed() ===
+    ~ temp to_print = parts_needed - inventory
+
+    {to_print ? toolbox: some tools,}
+    ~ to_print -= toolbox
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? luminiferous_optocoupler: a luminiferous optocoupler,}
+    //~ to_print -= luminiferous_optocoupler
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? conduit: a conduit,}
+    //~ to_print -= conduit
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? aetherium_capsule: an aetherium capsule,}
+    //~ to_print -= aetherium_capsule
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? lattice: a lattice,}
+    //~ to_print -= lattice
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? quark_splitter: a quark splitter,}
+    //~ to_print -= quark_splitter
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? magneto_resonator: a magneto resonator,}
+    //~ to_print -= magneto_resonator
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? mainspring: a mainspring,}
+    //~ to_print -= mainspring
+    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{to_print ? condenser: a condenser,}
+    //~ to_print -= condenser
+    <>{LIST_COUNT(to_print) == 1: and}
+    <>{to_print ? reagents: reagents,}
+    ~ return
+
 === intro ===
+<- my_toolbox(-> intro)
 * { workshop_explored < EXPLORE_WORKSHOP } [tag: cogs1]
     At my cluttered workbench, gears and steam-powered gauges lay scattered haphazardly. The commencement of my most ambitious creation unfolds before me. An automechanical marvel, a carriage that traverses the ground, sails the skies, and plunges into the depths of the unknown!
     As for my esteemed peers at the University, their incredulity shall know no bounds. Alas, this skepticism has become a persistent thorn in my side as of late.
@@ -81,22 +120,27 @@ Vice-Chancellor Haverhill's expression remains unyielding. "Professor Pendleton,
 As Vice-Chancellor Haverhill departs with a dignified turn, I understand the gravity of the situation and the urgency of my presence. The fate of the translocator experiment hangs in the balance, and I must heed the Vice-Chancellor's insistence.
 
 CUTSCENE(haverhill, leave-cutscene)
-SPAWN_AT(haverhill-return, haverhill)
+SPAWN_AT(haverhill-despawn, haverhill)
 -> workshop
 
 === workshop ===
+<- my_toolbox(-> workshop)
+* { parts_needed ? toolbox } [tag: toolbox]
+    Indeed, this toolbox shall play a pivotal role in the success of the project recently placed in my care!
+    ~ inventory += toolbox
+    SPAWN_AT(toolbox-despawn, toolbox)
+
 + [tag: to-outside-workshop]
     SPAWN_AT(workshop-exit)
     -> outside_workshop
-
-// SECRET
-// + [tag: garage-door]
-
-* { needs_supplies } [tag: cogs3]
-    By no mere coincidence, I claim, these old gauges may prove quite useful in the service of this new project that has just been bestowed upon me!
-    ~ inventory += gauge
 -
 -> workshop
+
+=== my_toolbox(-> return_to) ===
++ { parts_needed !? toolbox } [tag: toolbox]
+    This toolbox, a cherished heirloom from my grandfather, holds sentimental value, but its true significance lies in its role in the restoration of the automechanical multicarriage!
+-
+-> return_to
 
 === outside_workshop ===
 + [tag: to-workshop]
@@ -152,25 +196,25 @@ SPAWN_AT(haverhill-return, haverhill)
 * [tag: translocator-team]
     "Punctuality becomes you, Pendleton," Standish sneers. "It seems we've encountered a hiccup with the experiment's safety protocol. Progress shall remain at a standstill until we resolve this matter."
 
-    ** (pick_thorne) [Thorne mentioned stability...] "Professor Thorne, you mentioned the importance of stability, did you not?" I inquired, setting aside my tardiness for the moment.
+    ** (thorne) [Thorne mentioned stability...] "Professor Thorne, you mentioned the importance of stability, did you not?" I inquired, setting aside my tardiness for the moment.
 
         "Indeed, I did," replied Thorne with a discerning nod. "I appreciate your attentiveness. May I presume you concur that aetherium conduits offer a solution to this safety concern?"
-        ~ helping = thorne
+        ~ parts_needed = parts // + parts_for_thorne
 
-    ** (pick_sterling) [Sterling mentioned safety...] "Dr. Sterling, you have placed saftey at the forefront of your argument," I observed, momentarily disregarding my earlier tardiness.
+    ** (sterling) [Sterling mentioned safety...] "Dr. Sterling, you have placed saftey at the forefront of your argument," I observed, momentarily disregarding my earlier tardiness.
 
         "Quantum tunneling, without a doubt," exclaimed Sterling, eager for acknowledgment, "holds the most impeccable safety record within modern science. Would you not concur?"
-        ~ helping = sterling
+        ~ parts_needed = parts // + parts_for_sterling
 
-    ** (pick_standish) [Standish mentioned precision...] "Professor Standish, we would greatly appreciate your insights on the precision required to achieve our safety objectives," I replied, temporarily setting aside my earlier tardiness.
+    ** (standish) [Standish mentioned precision...] "Professor Standish, we would greatly appreciate your insights on the precision required to achieve our safety objectives," I replied, temporarily setting aside my earlier tardiness.
 
         "Precision gears milled to a tolerance of merely 10 microns, and resonance frequencies of a coil calibrated to within 2 standard deviations from the mean," Standish expounded at length, as if time stood still. "Precision is the sole path to ensuring the safety of human translocation."
-        ~ helping = standish
+        ~ parts_needed = parts // + parts_for_standish
 
-    ** (pick_bradford) [Bradford mentioned alchemy...] "Dr. Bradford, you are certain that the alchemical condensers will satisfy the experiment's safety requisites, are you not?" I directed my inquiry to the engineer, momentarily setting aside my earlier tardiness.
+    ** (bradford) [Bradford mentioned alchemy...] "Dr. Bradford, you are certain that the alchemical condensers will satisfy the experiment's safety requisites, are you not?" I directed my inquiry to the engineer, momentarily setting aside my earlier tardiness.
 
         "Indeed, safety alone would be an understatement!" The zealous doctor exclaimed. "When reagents are combined with precise proportions, the condensers can significantly enhance efficacy. They are remarkably safe by all indications."
-        ~ helping = bradford
+        ~ parts_needed = parts + parts_for_bradford
     --
     "Indeed, I must concur. I have yet to hear a more convincing thesis," I responded with a measured intensity, much like a coiled serpent ready to strike. "With the exception of thermionic interpolation, naturally. Research from Cambridge suggests it holds the most promise among our options."
 
@@ -179,30 +223,51 @@ SPAWN_AT(haverhill-return, haverhill)
     "Because you're not Pendleton," Thorne conceded, a hint of admiration in her tone. "None of us are," she added, fixing her eyes on me with approval.
 
     "I shall procure the essential components for a thermionic interpolator and the <>
-    { university_room_1.pick_thorne: aetherium conduits}
-    { university_room_1.pick_sterling: quantum tunneling lattices}
-    { university_room_1.pick_standish: chronomagnetic resonance coils}
-    { university_room_1.pick_bradford: alchemical condensers}
+    {university_room_1.thorne: aetherium conduits}
+    {university_room_1.sterling: quantum tunneling lattices}
+    {university_room_1.standish: chronomagnetic resonance coils}
+    {university_room_1.bradford: alchemical condensers}
     <>," I declared promptly. "And I shall require your expertise with the latter, <>
-    { university_room_1.pick_thorne: Professor Thorne}
-    { university_room_1.pick_sterling: Dr. Sterling}
-    { university_room_1.pick_standish: Professor Standish}
-    { university_room_1.pick_bradford: Dr. Bradford}
+    {university_room_1.thorne: Professor Thorne}
+    {university_room_1.sterling: Dr. Sterling}
+    {university_room_1.standish: Professor Standish}
+    {university_room_1.bradford: Dr. Bradford}
     <>."
 
     "I am at your service, Professor," <>
-    { university_room_1.pick_thorne: Thorne }
-    { university_room_1.pick_sterling: Sterling }
-    { university_room_1.pick_standish: Standish }
-    { university_room_1.pick_bradford: Bradford }
+    {university_room_1.thorne: Thorne }
+    {university_room_1.sterling: Sterling }
+    {university_room_1.standish: Standish }
+    {university_room_1.bradford: Bradford }
     <> replied with formal decorum.
 
     ~ solved_safety_problem = true
 
++ { solved_safety_problem == true } [tag: translocator-team]
+    "Greetings, dear Pendleton! How may we be of service on this splendid day?" {~Thorne|Sterling|Standish|Bradford} inquired.
+
+    "This is a list of all I have gathered thus far," I presented. "Is there anything else we require?"
+
+    {
+        - inventory == parts_needed:
+            "Indeed, that is everything we require. Let us proceed with the construction of the translocator," {~Thorne|Sterling|Standish|Bradford} suggests.
+
+            SPAWN_AT(translocator-spawn-1, translocator-1)
+            SPAWN_AT(translocator-spawn-2, translocator-2)
+
+            \~~CLANK!~~ ==BONK!== \#\#POW!\#\#
+
+            "The translocator is now finished," I declared. "Shall I make the initial attempt?"
+
+            "The honor is yours, and surely, you have earned it," {~Thorne|Sterling|Standish|Bradford} responded graciously.
+        - else:
+            "Upon comparing the components you've gathered with the components we require, it appears that you are indeed missing {print_parts_needed()}" {~Thorne|Sterling|Standish|Bradford} observed.
+    }
+
 * { solved_safety_problem == false } [tag: haverhill]
     "I am solely present for oversight, Pendleton," Haverhill sighed. "Have you managed to resolve the safety issue, as of yet?"
 
-    ** [About my grant...] "It is of paramount importance that I discuss my grant with you," I declared, giving no thought to the safety issue.
+    ** ["About my grant..."] "It is of paramount importance that I discuss my grant with you," I declared, giving no thought to the safety issue.
 
         "Your foremost concern should be dedicated to the translocator experiment, especially its safety for human travel," Haverhill advised.
         ~ requested_grant += 1
@@ -227,7 +292,19 @@ SPAWN_AT(haverhill-return, haverhill)
     --
 
     CUTSCENE(haverhill, leave-room-1-cutscene)
-    SPAWN_AT(haverhill-return, haverhill)
+    SPAWN_AT(haverhill-despawn, haverhill)
+
+* { parts_needed ? reagents } [tag: reagents]
+    "I thought that appeared familiar! This vial of reagents is bound to bring a smile to Bradford's face. Although the indolent fellow could have easily gathered it himself, as his gaze presently bores into the back of my head."
+    ~ inventory += reagents
+
++ [tag: translocator-1]
+    SPAWN_AT(warp-2)
+    -> ending_cutscene
+
++ [tag: translocator-2]
+    SPAWN_AT(warp-1)
+    -> ending_cutscene
 
 + [tag: to-university-hall-1]
     SPAWN_AT(university-room-1-exit)
@@ -268,3 +345,16 @@ The room falls into a more solemn hush, and all eyes turn to the impending discu
 Despite their relentless jeers, I know they share a collective confidence in the translocator experiment. It's a testament to their unwavering belief in the project, even if the competitive atmosphere at the university has them vying for grants. Amid the laughter and teasing, there's a common thread of hope and determination that binds us in our pursuit of groundbreaking discoveries.
 -
 -> university_room_1
+
+=== ending_cutscene ===
+"My word!" {~Professor Thorne|Dr. Sterling|Professor Standish|Dr. Bradford} exclaimed, her eyes widening, "You stood here a mere moment past, and now you appear on the opposite end of the lecture hall! Most curious and utterly fascinating."
+
+"In the blink of an eye," {~Professor Thorne|Dr. Sterling|Professor Standish|Dr. Bradford} added with shortness of breath.
+
+"I am indebted to each and every one of you," I expressed to the group, "the translocator experiment has been a resounding success. Today, we have demonstrated its remarkable safety and astonishing efficiency. It surpasses even the automechanical multicarriage in every conceivable aspect!"
+
+Upon my words, the room erupted in ecstatic laughter.
+
+CUTSCENE(is-player, ending-cutscene)
+-> END
+-

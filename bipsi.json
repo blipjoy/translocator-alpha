@@ -101,7 +101,7 @@
         }, {
           "key": "ending-cutscene",
           "type": "javascript",
-          "data": "TITLE(\"==The End==\");"
+          "data": "TITLE(\"==The End==\\nIf you enjoyed this game, please consider purchasing it on itch.io to show your support! Thank you!\");"
         }]
       }, {
         "id": 2,

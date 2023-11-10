@@ -23,34 +23,35 @@ VAR solved_safety_problem = false
 
 === function print_parts_needed() ===
     ~ temp to_print = parts_needed - inventory
+    ~ temp original_count = LIST_COUNT(to_print)
 
     {to_print ? toolbox: some tools,}
     ~ to_print -= toolbox
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? luminiferous_optocoupler: a luminiferous optocoupler,}
     //~ to_print -= luminiferous_optocoupler
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? conduit: a conduit,}
     //~ to_print -= conduit
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? aetherium_capsule: an aetherium capsule,}
     //~ to_print -= aetherium_capsule
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? lattice: a lattice,}
     //~ to_print -= lattice
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? quark_splitter: a quark splitter,}
     //~ to_print -= quark_splitter
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? magneto_resonator: a magneto resonator,}
     //~ to_print -= magneto_resonator
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? mainspring: a mainspring,}
     //~ to_print -= mainspring
-    //<>{LIST_COUNT(to_print) == 1: and}
+    //<>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     //<>{to_print ? condenser: a condenser,}
     //~ to_print -= condenser
-    <>{LIST_COUNT(to_print) == 1: and}
+    <>{original_count > 1 && LIST_COUNT(to_print) == 1: and}
     <>{to_print ? reagents: reagents,}
     ~ return
 
